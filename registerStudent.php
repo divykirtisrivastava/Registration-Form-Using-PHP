@@ -29,10 +29,14 @@ $dob = $_POST['dob'];
 
 if(isset($_FILES["image"]) && $_FILES["image"]["error"] == UPLOAD_ERR_OK) {
     $targetDirectory = "uploads/";
-    $targetFile = $targetDirectory . basename($_FILES["image"]["name"]);
+    $originalFilename = $_FILES["image"]["name"];
+        $fileExtension = pathinfo($originalFilename, PATHINFO_EXTENSION);
+        $uniqueFilename = uniqid() . '.' . $fileExtension;
+
+        $targetFile = $targetDirectory . $uniqueFilename;
 
     if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile)) {
-        echo "The file ". htmlspecialchars(basename($_FILES["image"]["name"])) . " has been uploaded.";
+        echo "The file ". htmlspecialchars($originalFilename) . " has been uploaded.";
     } else {
         echo "Sorry, there was an error uploading your file.";
     }
@@ -48,7 +52,7 @@ if ($resultCheckDuplicate->num_rows > 0) {
     echo "Error: Email address already exists.";
 } else {
     if ($conn->query($sql) === TRUE) {
-        header("Location: student.php");
+        header("Location: viewStudent.php");
         exit();
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
